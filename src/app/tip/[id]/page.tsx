@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Typography, Avatar } from "@mui/joy";
 import { ClaimModal } from "@/components/claim-modal";
+import { QRCodeModal } from "@/components/qr-code-modal";
 
 type Passport = {
   passport_profile: {
     display_name: string;
     image_url: string;
+    name: string;
   };
   score: number;
 };
@@ -15,6 +17,7 @@ export default function TipPage({ params }: { params: { id: string } }) {
   const [passport, setPassport] = useState<Passport | null>();
   const [fetchingUser, setFetchingUser] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -83,21 +86,7 @@ export default function TipPage({ params }: { params: { id: string } }) {
               letterSpacing: "-2px",
             }}
           >
-            Summer of
-          </Typography>
-          <Typography
-            level="h1"
-            sx={{
-              color: "#FBFCFE",
-              textAlign: "center",
-              fontSize: "40px",
-              fontStyle: "italic",
-              fontWeight: 400,
-              lineHeight: "48px",
-              letterSpacing: "-2px",
-            }}
-          >
-            $TALENT
+            $BUILD Tipping
           </Typography>
           {fetchingUser && <Button loading variant="plain" size="lg"></Button>}
           {!fetchingUser && !!passport && (
@@ -169,11 +158,11 @@ export default function TipPage({ params }: { params: { id: string } }) {
                 }}
               >
                 <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
-                  Accept Nomination
+                  Claim $BUILD
                 </Typography>
               </Button>
               <Button
-                onClick={() => setShowModal(true)}
+                onClick={() => setShowQRCode(true)}
                 sx={{
                   borderRadius: "12px",
                   border: "2px solid var(--neutral-800, #171A1C)",
@@ -187,7 +176,7 @@ export default function TipPage({ params }: { params: { id: string } }) {
                 }}
               >
                 <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
-                  Claim $BUILD TIP
+                  Share QRCode
                 </Typography>
               </Button>
             </>
@@ -198,6 +187,12 @@ export default function TipPage({ params }: { params: { id: string } }) {
         open={showModal}
         close={() => setShowModal(false)}
         identifier={params.id}
+        tipperUsername={passport?.passport_profile.name || params.id}
+      />
+      <QRCodeModal
+        open={showQRCode}
+        close={() => setShowQRCode(false)}
+        displayName={passport?.passport_profile.display_name || params.id}
       />
     </Box>
   );

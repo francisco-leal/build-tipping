@@ -66,21 +66,7 @@ export default function TipPage() {
               letterSpacing: "-2px",
             }}
           >
-            Summer of
-          </Typography>
-          <Typography
-            level="h1"
-            sx={{
-              color: "#FBFCFE",
-              textAlign: "center",
-              fontSize: "40px",
-              fontStyle: "italic",
-              fontWeight: 400,
-              lineHeight: "48px",
-              letterSpacing: "-2px",
-            }}
-          >
-            $TALENT
+            $BUILD Tipping
           </Typography>
           <w3m-button />
           <Typography level="body-md" textAlign={"center"} textColor="white">

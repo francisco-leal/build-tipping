@@ -15,8 +15,9 @@ type Props = {
   open: boolean;
   close: () => void;
   identifier: string;
+  tipperUsername: string;
 };
-export function ClaimModal({ open, close, identifier }: Props) {
+export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
   const [ens, setEns] = useState("");
   const [claiming, setClaiming] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -47,7 +48,7 @@ export function ClaimModal({ open, close, identifier }: Props) {
 
   const shareOnFarcaster = () => {
     window.open(
-      `https://warpcast.com/~/compose?text=I just got nominated IRL!&embeds%5B%5D=https://tip.build.top/`
+      `https://warpcast.com/~/compose?text=I just received an IRL tip of 100K $BUILD from @${tipperUsername} in Brussels!&embeds%5B%5D=https://tip.build.top/`
     );
   };
 
@@ -152,7 +153,7 @@ export function ClaimModal({ open, close, identifier }: Props) {
                 level="body-sm"
                 sx={{ color: "#0B0D0E", fontSize: "10px" }}
               >
-                {claiming ? "" : "Claim 100k $BUILD"}
+                {claiming ? "" : "Claim"}
               </Typography>
             </Button>
           </Box>
@@ -185,14 +186,15 @@ export function ClaimModal({ open, close, identifier }: Props) {
             fontWeight="lg"
             mb={1}
           >
-            Congratulations
+            Congratulations 🫡
           </Typography>
           <Typography
             id="modal-desc"
             textColor="text.tertiary"
             textAlign={"center"}
           >
-            You&apos;ve just successfully claimed 100k BUILD and got nominated!
+            You successfully claimed 100K $BUILD, and received a BUILD
+            nomination from {tipperUsername}.
           </Typography>
           <Box
             sx={{
