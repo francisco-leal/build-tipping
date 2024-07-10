@@ -7,15 +7,50 @@ import {
   ModalDialog,
   Box,
 } from "@mui/joy";
+import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
+import { useAccount } from "wagmi";
 
 type Props = {
   open: boolean;
   close: () => void;
   displayName: string;
+  address: string;
 };
 
-export function QRCodeModal({ open, close, displayName }: Props) {
+export function QRCodeModal({ open, close, displayName, address }: Props) {
+  const [code, setCode] = useState<string>();
+  const [url, setUrl] = useState<string>("");
+
+  useEffect(() => {
+    if (!address) return;
+    const existingCode = new URLSearchParams(window.location.search).get(
+      "code"
+    );
+    if (existingCode) {
+      setCode(existingCode);
+      return;
+    }
+
+    try {
+      fetch(`/api/code?owner=${address}`)
+        .then((r) => r.json())
+        .then(({ code }) => setCode(code));
+    } catch {
+      alert("We couldn't generate a one time code for you to share");
+    }
+  }, [address]);
+
+  useEffect(() => {
+    if (code) {
+      setUrl(
+        window.location.origin + window.location.pathname + `?code=${code}`
+      );
+    } else {
+      setUrl(window.location.origin + window.location.pathname);
+    }
+  }, [code]);
+
   return (
     <Modal
       aria-labelledby="claim-build"
@@ -53,12 +88,14 @@ export function QRCodeModal({ open, close, displayName }: Props) {
           Scan this QR code to claim a $BUILD Tip and a Nomination from
           {displayName}.
         </Typography>
-        <QRCode
-          size={256}
-          style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-          value={window.location.href}
-          viewBox={`0 0 256 256`}
-        />
+        {url !== "" && (
+          <QRCode
+            size={256}
+            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+            value={url}
+            viewBox={`0 0 256 256`}
+          />
+        )}
         <Box
           sx={{
             marginTop: "auto",

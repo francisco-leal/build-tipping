@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Box, Button, Typography, Avatar } from "@mui/joy";
 import { ClaimModal } from "@/components/claim-modal";
 import { QRCodeModal } from "@/components/qr-code-modal";
+import { useAccount } from "wagmi";
 
 type Passport = {
   passport_profile: {
@@ -18,6 +19,7 @@ export default function TipPage({ params }: { params: { id: string } }) {
   const [fetchingUser, setFetchingUser] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
+  const { address } = useAccount();
 
   useEffect(() => {
     if (params.id) {
@@ -33,6 +35,8 @@ export default function TipPage({ params }: { params: { id: string } }) {
       }
     }
   }, [params]);
+
+  const ownerUser = address?.toLowerCase() === params.id.toLowerCase();
 
   return (
     <Box
@@ -161,24 +165,26 @@ export default function TipPage({ params }: { params: { id: string } }) {
                   Claim $BUILD
                 </Typography>
               </Button>
-              <Button
-                onClick={() => setShowQRCode(true)}
-                sx={{
-                  borderRadius: "12px",
-                  border: "2px solid var(--neutral-800, #171A1C)",
-                  background: "#FCFAF4",
-                  boxShadow: "2px 2px 0px 0px #000",
-                  width: "100%",
-                  ":hover": {
-                    background: "#F6D254",
-                    textDecoration: "none",
-                  },
-                }}
-              >
-                <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
-                  Share QRCode
-                </Typography>
-              </Button>
+              {ownerUser && (
+                <Button
+                  onClick={() => setShowQRCode(true)}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "2px solid var(--neutral-800, #171A1C)",
+                    background: "#FCFAF4",
+                    boxShadow: "2px 2px 0px 0px #000",
+                    width: "100%",
+                    ":hover": {
+                      background: "#F6D254",
+                      textDecoration: "none",
+                    },
+                  }}
+                >
+                  <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
+                    Share QRCode
+                  </Typography>
+                </Button>
+              )}
             </>
           )}
         </Box>
@@ -189,11 +195,14 @@ export default function TipPage({ params }: { params: { id: string } }) {
         identifier={params.id}
         tipperUsername={passport?.passport_profile.name || params.id}
       />
-      <QRCodeModal
-        open={showQRCode}
-        close={() => setShowQRCode(false)}
-        displayName={passport?.passport_profile.display_name || params.id}
-      />
+      {!!ownerUser && (
+        <QRCodeModal
+          open={showQRCode}
+          close={() => setShowQRCode(false)}
+          address={address}
+          displayName={passport?.passport_profile.display_name || params.id}
+        />
+      )}
     </Box>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Input,
   Button,
@@ -9,7 +9,9 @@ import {
   ModalDialog,
   Box,
   Avatar,
+  Link,
 } from "@mui/joy";
+import { useRouter } from "next/navigation";
 
 type Props = {
   open: boolean;
@@ -21,6 +23,18 @@ export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
   const [ens, setEns] = useState("");
   const [claiming, setClaiming] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [txHash, setTxHash] = useState<string>();
+  const [code, setCode] = useState<string>();
+  const router = useRouter();
+
+  useEffect(() => {
+    const urlCode = new URLSearchParams(window.location.search).get("code");
+
+    setCode(urlCode || "");
+    if (urlCode) {
+      router.replace(window.location.pathname, undefined);
+    }
+  }, []);
 
   const claimBuild = () => {
     setClaiming(true);
@@ -29,21 +43,30 @@ export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": "123", // @TODO: replace with token from cards
+        "x-api-key": code || "",
       },
       body: JSON.stringify({
         nominator: identifier,
         ens,
       }),
-    }).then((r) => {
-      if (r.status === 200) {
-        setSuccess(true);
-        setClaiming(false);
-      } else {
-        setClaiming(false);
-        alert("We couldn't process this nomination");
-      }
-    });
+    })
+      .then((r) => {
+        if (r.status === 200) {
+          setSuccess(true);
+          setClaiming(false);
+          return r.json();
+        } else {
+          setClaiming(false);
+          return r.json();
+        }
+      })
+      .then(({ hash, message }) => {
+        if (hash) {
+          setTxHash(hash);
+        } else {
+          alert(message);
+        }
+      });
   };
 
   const shareOnFarcaster = () => {
@@ -161,17 +184,19 @@ export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
       ) : (
         <ModalDialog
           variant="outlined"
-          layout="fullscreen"
-          sx={{
-            maxWidth: 500,
-            borderRadius: "md",
-            p: 3,
-            boxShadow: "lg",
-            gap: 2,
+          sx={(theme) => ({
+            [theme.breakpoints.only("xs")]: {
+              top: "unset",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              borderRadius: 0,
+              transform: "none",
+              maxWidth: "unset",
+            },
             display: "flex",
-            justifyContent: "center",
             alignItems: "center",
-          }}
+          })}
         >
           <ModalClose variant="plain" sx={{ m: 1 }} onClick={() => close()} />
           <Avatar
@@ -196,9 +221,24 @@ export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
             You successfully claimed 100K $BUILD, and received a BUILD
             nomination from {tipperUsername}.
           </Typography>
+          {txHash && (
+            <Typography
+              id="modal-desc"
+              textColor="text.tertiary"
+              textAlign={"center"}
+            >
+              View{" "}
+              <Link
+                target="_blank"
+                href={`https://sepolia.basescan.org/tx/${txHash}`}
+              >
+                transaction
+              </Link>
+            </Typography>
+          )}
           <Box
             sx={{
-              marginTop: "auto",
+              marginTop: "42px",
               display: "flex",
               flexDirection: "row",
               justifySelf: "end",
