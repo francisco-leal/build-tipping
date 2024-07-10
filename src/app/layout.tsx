@@ -13,6 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Tip BUILD IRL",
   description: "Nominate your frens IRL",
+  icons: ["/favicon.ico"],
 };
 
 export default function RootLayout({
