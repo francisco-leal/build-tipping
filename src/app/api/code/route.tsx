@@ -14,10 +14,20 @@ export async function GET(request: NextRequest) {
   }
 
   if (!WHITELISTED_ADDRESS[wallet.toLowerCase()]) {
-    return Response.json(
-      { message: "You can not tip others" },
-      { status: 400 }
-    );
+    const { data, error: whitelistedError } = await supabase
+      .from("nominations")
+      .select("*")
+      .eq("destination_wallet", wallet.toLowerCase())
+      .throwOnError();
+
+    if (data && data.length > 0 && !whitelistedError) {
+      console.log("User was nominated");
+    } else {
+      return Response.json(
+        { message: "You can not tip others" },
+        { status: 400 }
+      );
+    }
   }
 
   const { error } = await supabase
