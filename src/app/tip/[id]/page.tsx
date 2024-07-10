@@ -125,6 +125,10 @@ export default function TipPage({ params }: { params: { id: string } }) {
                     top: "170px",
                     right: "20px",
                     fontSize: "14px",
+                    ":hover": {
+                      background: "#FCFAF4",
+                      textDecoration: "none",
+                    },
                   }}
                 >
                   {passport.passport_profile.display_name}
@@ -141,6 +145,10 @@ export default function TipPage({ params }: { params: { id: string } }) {
                     top: "200px",
                     right: "-40px",
                     fontSize: "14px",
+                    ":hover": {
+                      background: "#FCFAF4",
+                      textDecoration: "none",
+                    },
                   }}
                 >
                   Builder Score {passport.score}
@@ -154,6 +162,10 @@ export default function TipPage({ params }: { params: { id: string } }) {
                   background: "#F6D254",
                   boxShadow: "2px 2px 0px 0px #000",
                   width: "100%",
+                  ":hover": {
+                    background: "#FBE555",
+                    textDecoration: "none",
+                  },
                 }}
               >
                 <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
@@ -168,6 +180,10 @@ export default function TipPage({ params }: { params: { id: string } }) {
                   background: "#FCFAF4",
                   boxShadow: "2px 2px 0px 0px #000",
                   width: "100%",
+                  ":hover": {
+                    background: "#F6D254",
+                    textDecoration: "none",
+                  },
                 }}
               >
                 <Typography level="body-md" sx={{ color: "#0B0D0E" }}>

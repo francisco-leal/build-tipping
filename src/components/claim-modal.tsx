@@ -62,14 +62,17 @@ export function ClaimModal({ open, close, identifier }: Props) {
       {!success ? (
         <ModalDialog
           variant="outlined"
-          layout="fullscreen"
-          sx={{
-            maxWidth: 500,
-            borderRadius: "md",
-            p: 3,
-            boxShadow: "lg",
-            gap: 2,
-          }}
+          sx={(theme) => ({
+            [theme.breakpoints.only("xs")]: {
+              top: "unset",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              borderRadius: 0,
+              transform: "none",
+              maxWidth: "unset",
+            },
+          })}
         >
           <ModalClose variant="plain" sx={{ m: 1 }} />
           <Typography
@@ -91,6 +94,7 @@ export function ClaimModal({ open, close, identifier }: Props) {
             onChange={(e) => setEns(e.target.value)}
             sx={{
               "--Input-focusedHighlight": "black",
+              marginBottom: 4,
             }}
           />
           <Box
@@ -112,6 +116,10 @@ export function ClaimModal({ open, close, identifier }: Props) {
                 ":disabled": {
                   boxShadow: "0px 0px 0px 0px #000",
                 },
+                ":hover": {
+                  background: "#F6D254",
+                  textDecoration: "none",
+                },
               }}
               disabled={claiming}
             >
@@ -132,6 +140,10 @@ export function ClaimModal({ open, close, identifier }: Props) {
                 width: "100%",
                 ":disabled": {
                   backgroundColor: "#F6D254",
+                },
+                ":hover": {
+                  background: "#FBE555",
+                  textDecoration: "none",
                 },
               }}
               loading={claiming}
@@ -203,6 +215,10 @@ export function ClaimModal({ open, close, identifier }: Props) {
                 ":disabled": {
                   boxShadow: "0px 0px 0px 0px #000",
                 },
+                ":hover": {
+                  background: "#F6D254",
+                  textDecoration: "none",
+                },
               }}
             >
               <Typography level="body-sm" sx={{ color: "#0B0D0E" }}>
@@ -219,6 +235,10 @@ export function ClaimModal({ open, close, identifier }: Props) {
                 width: "100%",
                 ":disabled": {
                   backgroundColor: "#F6D254",
+                },
+                ":hover": {
+                  background: "#FBE555",
+                  textDecoration: "none",
                 },
               }}
             >

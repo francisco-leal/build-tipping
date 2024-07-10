@@ -39,6 +39,10 @@ export default function Home() {
             background: "#F6D254",
             boxShadow: "2px 2px 0px 0px #000",
             width: "100%",
+            ":hover": {
+              background: "#FBE555",
+              textDecoration: "none",
+            },
           }}
         >
           <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
@@ -54,6 +58,10 @@ export default function Home() {
             background: "#FCFAF4",
             boxShadow: "2px 2px 0px 0px #000",
             width: "100%",
+            ":hover": {
+              background: "#F6D254",
+              textDecoration: "none",
+            },
           }}
         >
           <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
