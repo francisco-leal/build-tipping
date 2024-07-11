@@ -25,14 +25,20 @@ export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
   const [success, setSuccess] = useState(false);
   const [txHash, setTxHash] = useState<string>();
   const [code, setCode] = useState<string>();
+  const [codeType, setCodeType] = useState<string>();
   const router = useRouter();
 
   useEffect(() => {
     const urlCode = new URLSearchParams(window.location.search).get("code");
 
-    setCode(urlCode || "");
     if (urlCode) {
+      setCode(urlCode || "");
+      setCodeType("qrcode");
       router.replace(window.location.pathname, undefined);
+    } else {
+      const iykCode = new URLSearchParams(window.location.search).get("iykRef");
+      setCodeType("iyk");
+      setCode(iykCode || "");
     }
   }, []);
 
@@ -48,6 +54,7 @@ export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
       body: JSON.stringify({
         nominator: identifier,
         ens,
+        codeType,
       }),
     })
       .then((r) => {

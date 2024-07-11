@@ -15,6 +15,7 @@ export type Database = {
           destination_wallet: string;
           id: number;
           origin_wallet: string;
+          source: string;
           tx_hash: string;
         };
         Insert: {
@@ -22,6 +23,7 @@ export type Database = {
           destination_wallet: string;
           id?: number;
           origin_wallet: string;
+          source?: string;
           tx_hash: string;
         };
         Update: {
@@ -29,6 +31,7 @@ export type Database = {
           destination_wallet?: string;
           id?: number;
           origin_wallet?: string;
+          source?: string;
           tx_hash?: string;
         };
         Relationships: [];

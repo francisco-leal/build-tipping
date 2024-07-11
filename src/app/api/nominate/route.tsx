@@ -9,6 +9,7 @@ import { supabase } from "@/db";
 type CreateNominateData = {
   nominator: string;
   ens: string;
+  codeType: string;
 };
 
 const privateKey = process.env.TIPPING_WALLET_PRIVATE_KEY;
@@ -17,6 +18,7 @@ const buildAddress = process.env
   .NEXT_PUBLIC_BUILD_TOKEN_ADDRESS as `0x${string}`;
 const AMOUNT_TO_TRANSFER = "100000";
 const moralisApiKey = process.env.MORALIS_API_KEY;
+const iyKApiKey = process.env.IYK_API_KEY || "";
 
 Moralis.start({
   apiKey: moralisApiKey,
@@ -34,20 +36,40 @@ export async function POST(request: NextRequest) {
     return Response.json({ message: "This code has expired" }, { status: 401 });
   }
 
-  const { nominator, ens } = (await request.json()) as CreateNominateData;
+  const { nominator, ens, codeType } =
+    (await request.json()) as CreateNominateData;
 
-  const { data, error } = await supabase
-    .from("one_time_codes")
-    .update({ used: true })
-    .eq("code", authHeader)
-    .eq("owner", nominator.toLowerCase())
-    .eq("used", false)
-    .gte("created_at", new Date(Date.now() - 5 * 60 * 1000).toISOString())
-    .select("*")
-    .single();
+  if (codeType === "qrcode") {
+    const { data, error } = await supabase
+      .from("one_time_codes")
+      .update({ used: true })
+      .eq("code", authHeader)
+      .eq("owner", nominator.toLowerCase())
+      .eq("used", false)
+      .gte("created_at", new Date(Date.now() - 5 * 60 * 1000).toISOString())
+      .select("*")
+      .single();
 
-  if (error || data.code !== authHeader) {
-    return Response.json({ message: "This code has expired" }, { status: 401 });
+    if (error || data.code !== authHeader) {
+      return Response.json(
+        { message: "This code has expired" },
+        { status: 401 }
+      );
+    }
+  } else {
+    const iyKRequest = await fetch(`https://api.iyk.app/refs/${authHeader}`, {
+      headers: {
+        "x-iyk-api-key": iyKApiKey,
+      },
+    });
+    const result = await iyKRequest.json();
+
+    if (!result.isValidRef) {
+      return Response.json(
+        { message: "This code has expired" },
+        { status: 401 }
+      );
+    }
   }
 
   const response = await Moralis.EvmApi.resolve.resolveENSDomain({
@@ -112,6 +134,7 @@ export async function POST(request: NextRequest) {
       origin_wallet: nominator.toLowerCase(),
       destination_wallet: recipient.toLowerCase(),
       tx_hash: result,
+      source: codeType,
     })
     .throwOnError();
 
