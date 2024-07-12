@@ -103,7 +103,8 @@ export function QRCodeModal({ open, close, displayName, address }: Props) {
         </Typography>
         <Typography id="modal-desc" textColor="text.tertiary">
           Scan this QR code to claim a $BUILD Tip and a Nomination from
-          {displayName}.
+          {displayName}. This code is valid for 5 minutes and can only be used
+          once.
         </Typography>
         {url !== "" && (
           <QRCode
