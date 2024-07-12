@@ -21,6 +21,7 @@ type Props = {
 export function QRCodeModal({ open, close, displayName, address }: Props) {
   const [code, setCode] = useState<string>();
   const [url, setUrl] = useState<string>("");
+  const [loadingCode, setLoadingCode] = useState(false);
 
   useEffect(() => {
     if (!address) return;
@@ -50,6 +51,22 @@ export function QRCodeModal({ open, close, displayName, address }: Props) {
       setUrl(window.location.origin + window.location.pathname);
     }
   }, [code]);
+
+  const refreshCode = () => {
+    if (loadingCode) return;
+    setLoadingCode(true);
+    try {
+      fetch(`/api/code?owner=${address}`)
+        .then((r) => r.json())
+        .then(({ code }) => {
+          setLoadingCode(false);
+          setCode(code);
+        });
+    } catch {
+      setLoadingCode(false);
+      alert("We couldn't generate a one time code for you to share");
+    }
+  };
 
   return (
     <Modal
@@ -110,6 +127,30 @@ export function QRCodeModal({ open, close, displayName, address }: Props) {
             onClick={() => close()}
             sx={{
               borderRadius: "12px",
+              border: "2px solid var(--neutral-800, #171A1C)",
+              background: "#FCFAF4",
+              boxShadow: "2px 2px 0px 0px #000",
+              width: "100%",
+              ":disabled": {
+                boxShadow: "0px 0px 0px 0px #000",
+              },
+              ":hover": {
+                background: "#F6D254",
+                textDecoration: "none",
+              },
+            }}
+          >
+            <Typography
+              level="body-sm"
+              sx={{ color: "#0B0D0E", fontSize: "10px" }}
+            >
+              Close
+            </Typography>
+          </Button>
+          <Button
+            onClick={() => refreshCode()}
+            sx={{
+              borderRadius: "12px",
               border: "2px solid #171A1C",
               background: "#F6D254",
               boxShadow: "2px 2px 0px 0px #000",
@@ -122,9 +163,13 @@ export function QRCodeModal({ open, close, displayName, address }: Props) {
                 textDecoration: "none",
               },
             }}
+            loading={loadingCode}
           >
-            <Typography level="body-sm" sx={{ color: "#0B0D0E" }}>
-              Close
+            <Typography
+              level="body-sm"
+              sx={{ color: "#0B0D0E", fontSize: "10px" }}
+            >
+              {loadingCode ? "Generating new code.." : "Refresh code"}
             </Typography>
           </Button>
         </Box>
