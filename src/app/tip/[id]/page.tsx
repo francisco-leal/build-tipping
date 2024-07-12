@@ -19,6 +19,7 @@ export default function TipPage({ params }: { params: { id: string } }) {
   const [fetchingUser, setFetchingUser] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
+  const [timer, setTimer] = useState(60);
   const { address } = useAccount();
 
   useEffect(() => {
@@ -35,6 +36,14 @@ export default function TipPage({ params }: { params: { id: string } }) {
       }
     }
   }, [params]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const ownerUser = address?.toLowerCase() === params.id.toLowerCase();
 
@@ -147,24 +156,34 @@ export default function TipPage({ params }: { params: { id: string } }) {
                   Builder Score {passport.score}
                 </Button>
               </Box>
-              <Button
-                onClick={() => setShowModal(true)}
-                sx={{
-                  borderRadius: "12px",
-                  border: "2px solid #171A1C",
-                  background: "#F6D254",
-                  boxShadow: "2px 2px 0px 0px #000",
-                  width: "100%",
-                  ":hover": {
-                    background: "#FBE555",
-                    textDecoration: "none",
-                  },
-                }}
-              >
-                <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
-                  Claim $BUILD
-                </Typography>
-              </Button>
+              {!ownerUser && (
+                <>
+                  <Button
+                    onClick={() => setShowModal(true)}
+                    sx={{
+                      borderRadius: "12px",
+                      border: "2px solid #171A1C",
+                      background: "#F6D254",
+                      boxShadow: "2px 2px 0px 0px #000",
+                      width: "100%",
+                      ":hover": {
+                        background: "#FBE555",
+                        textDecoration: "none",
+                      },
+                    }}
+                    disabled={timer <= 0}
+                  >
+                    <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
+                      Claim $BUILD
+                    </Typography>
+                  </Button>
+                  <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
+                    {timer > 0
+                      ? `You have ${timer} seconds to claim $BUILD.`
+                      : `The code has expired.`}
+                  </Typography>
+                </>
+              )}
               {ownerUser && (
                 <Button
                   onClick={() => setShowQRCode(true)}

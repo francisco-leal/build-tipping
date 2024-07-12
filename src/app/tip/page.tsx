@@ -70,7 +70,9 @@ export default function TipPage() {
           </Typography>
           <w3m-button />
           <Typography level="body-md" textAlign={"center"} textColor="white">
-            Connect your wallet to receive your QRCode and start tipping
+            Connect your wallet to tip others with your custom QRCode. You need
+            to have been nominated by someone else to be able to nominate
+            others.
           </Typography>
         </Box>
       </Box>
