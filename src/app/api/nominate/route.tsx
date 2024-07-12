@@ -28,11 +28,6 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest) {
   if (!privateKey || !baseRPC || !buildAddress) {
     return Response.json({ message: "Unable to tip" }, { status: 500 });
-  } else {
-    return Response.json(
-      { message: "Tipping IRL hasn't started yet!" },
-      { status: 401 }
-    );
   }
 
   const authHeader = request.headers.get("x-api-key");
@@ -93,6 +88,33 @@ export async function POST(request: NextRequest) {
     return Response.json(
       { message: "We couldn't find this ENS" },
       { status: 404 }
+    );
+  }
+
+  try {
+    const nominatorRequest = await fetch(
+      `https://api.talentprotocol.com/api/v2/passports/${nominator}`
+    );
+    const { passport: nominatorPassport } = await nominatorRequest.json();
+    const recipientRequest = await fetch(
+      `https://api.talentprotocol.com/api/v2/passports/${recipient}`
+    );
+    const { passport: recipientPassport } = await recipientRequest.json();
+
+    if (nominatorPassport.passport_id === recipientPassport.passport_id) {
+      return Response.json(
+        { message: "You can't tip yourself" },
+        { status: 400 }
+      );
+    }
+  } catch {
+    console.log("Couldn't validate passports");
+  }
+
+  if (recipient === nominator) {
+    return Response.json(
+      { message: "You can't tip yourself" },
+      { status: 400 }
     );
   }
 
