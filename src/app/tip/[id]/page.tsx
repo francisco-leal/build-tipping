@@ -177,9 +177,9 @@ export default function TipPage({ params }: { params: { id: string } }) {
                       Claim $BUILD
                     </Typography>
                   </Button>
-                  <Typography level="body-md" sx={{ color: "#0B0D0E" }}>
+                  <Typography level="body-md" sx={{ color: "white" }}>
                     {timer > 0
-                      ? `You have ${timer} seconds to claim $BUILD.`
+                      ? `${passport.passport_profile.display_name} wants to reward you! You have ${timer} seconds to claim $BUILD.`
                       : `The code has expired.`}
                   </Typography>
                 </>
