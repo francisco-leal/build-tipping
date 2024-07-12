@@ -243,10 +243,7 @@ export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
               textAlign={"center"}
             >
               View{" "}
-              <Link
-                target="_blank"
-                href={`https://sepolia.basescan.org/tx/${txHash}`}
-              >
+              <Link target="_blank" href={`https://basescan.org/tx/${txHash}`}>
                 transaction
               </Link>
             </Typography>
