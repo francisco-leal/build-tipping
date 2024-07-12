@@ -22,7 +22,7 @@ type Props = {
 export function ClaimModal({ open, close, identifier, tipperUsername }: Props) {
   const [ens, setEns] = useState("");
   const [claiming, setClaiming] = useState(false);
-  const [success, setSuccess] = useState(true);
+  const [success, setSuccess] = useState(false);
   const [txHash, setTxHash] = useState<string>();
   const [code, setCode] = useState<string>();
   const [codeType, setCodeType] = useState<string>();
