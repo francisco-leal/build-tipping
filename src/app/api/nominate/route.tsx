@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { erc20Abi } from "viem";
 import Moralis from "moralis";
 import { http, createWalletClient, getContract, parseEther } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 import { supabase } from "@/db";
 
@@ -28,6 +28,11 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest) {
   if (!privateKey || !baseRPC || !buildAddress) {
     return Response.json({ message: "Unable to tip" }, { status: 500 });
+  } else {
+    return Response.json(
+      { message: "Tipping IRL hasn't started yet!" },
+      { status: 401 }
+    );
   }
 
   const authHeader = request.headers.get("x-api-key");
@@ -108,7 +113,7 @@ export async function POST(request: NextRequest) {
   const account = privateKeyToAccount(`0x${privateKey}`);
   const client = createWalletClient({
     account,
-    chain: baseSepolia,
+    chain: base,
     transport: http(baseRPC),
   });
 
