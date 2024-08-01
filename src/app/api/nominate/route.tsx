@@ -19,6 +19,7 @@ const buildAddress = process.env
 const AMOUNT_TO_TRANSFER = "100000";
 const moralisApiKey = process.env.MORALIS_API_KEY;
 const iyKApiKey = process.env.IYK_API_KEY || "";
+const talentAPIKey = process.env.TALENT_API_KEY || "";
 
 Moralis.start({
   apiKey: moralisApiKey,
@@ -93,11 +94,23 @@ export async function POST(request: NextRequest) {
 
   try {
     const nominatorRequest = await fetch(
-      `https://api.talentprotocol.com/api/v2/passports/${nominator}`
+      `https://api.talentprotocol.com/api/v2/passports/${nominator}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": talentAPIKey,
+        },
+      }
     );
     const { passport: nominatorPassport } = await nominatorRequest.json();
     const recipientRequest = await fetch(
-      `https://api.talentprotocol.com/api/v2/passports/${recipient}`
+      `https://api.talentprotocol.com/api/v2/passports/${recipient}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": talentAPIKey,
+        },
+      }
     );
     const { passport: recipientPassport } = await recipientRequest.json();
 
