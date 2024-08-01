@@ -25,7 +25,11 @@ export default function TipPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     if (params.id) {
       try {
-        fetch(`https://api.talentprotocol.com/api/v2/passports/${params.id}`)
+        fetch(`https://api.talentprotocol.com/api/v2/passports/${params.id}`, {
+          headers: {
+            "X-API-KEY": process.env.NEXT_PUBLIC_PASSPORT_API_TOKEN || "",
+          },
+        })
           .then((r) => r.json())
           .then(({ passport }) => {
             setPassport(passport);

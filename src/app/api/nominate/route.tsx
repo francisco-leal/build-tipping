@@ -93,24 +93,23 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const api_url = "https://api.passport.talentprotocol.com";
+    const api_token = process.env.PASSPORT_API_TOKEN;
+    const headers = {
+      "Content-Type": "application/json",
+      "X-API-KEY": api_token || "",
+    };
+
     const nominatorRequest = await fetch(
-      `https://api.talentprotocol.com/api/v2/passports/${nominator}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": talentAPIKey,
-        },
-      }
+      `${api_url}/api/v2/passports/${nominator}`,
+      { headers }
     );
+
     const { passport: nominatorPassport } = await nominatorRequest.json();
+
     const recipientRequest = await fetch(
-      `https://api.talentprotocol.com/api/v2/passports/${recipient}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": talentAPIKey,
-        },
-      }
+      `${api_url}/api/v2/passports/${recipient}`,
+      { headers }
     );
     const { passport: recipientPassport } = await recipientRequest.json();
 
